@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import MainLayout from '../../MainLayout';
 import testImg from '../../../assets/images/test-searchPage-desktop.jpg';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { searchJourneys } from '../../../store/reducers/search';
+import { KeysOfParams, changeParamsField, searchJourneys } from '../../../store/reducers/search';
 import { fetchAutoComplete } from '../../../store/reducers/autoComplete';
 
 const styles = {
@@ -122,14 +122,30 @@ function SearchPage() {
   const query = useAppSelector((state) => state.autoComplete.query);
   const searchParams = useAppSelector((state) => state.search.params);
   const maxDuration = useAppSelector((state) => state.search.params.max_duration);
+  const datetime = useAppSelector((state) => state.search.params.datetime);
   const journeys = useAppSelector((state) => state.search.journeys);
   const isLoading = useAppSelector((state) => state.search.loading);
-  const [selectedCityId, setSelectedCityId] = useState<string>('');
+  // const [selectedCityId, setSelectedCityId] = useState<string>('');
+
+  const handleChangeField = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    const fieldName = event.target.name as KeysOfParams;
+    dispatch(changeParamsField({
+      propertyKey: fieldName,
+      value: newValue,
+    }));
+  };
 
   const handleAutoCompleteChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     console.log(newValue);
     dispatch(fetchAutoComplete(newValue));
+  };
+  const handleSelectedCityIdChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedCity = query.find((item: { name: string }) => item.name === event.target.value);
+    if (selectedCity) {
+      handleChangeField(event);
+    }
   };
 
   const handleMaxDurationChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -137,14 +153,14 @@ function SearchPage() {
       ...searchParams,
       max_duration: parseInt(event.target.value, 10),
     };
-    dispatch(searchJourneys(updatedParams));
+    // dispatch(searchJourneys(updatedParams));
   };
-
-  const handleSelectedCityIdChange = (_event: unknown, value: string) => {
-    const selectedCity = query.find((item: { name: string }) => item.name === value);
-    if (selectedCity) {
-      setSelectedCityId(selectedCity.id);
-    }
+  const handleDatetimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const updatedParams = {
+      ...searchParams,
+      datetime: event.target.value,
+    };
+    // dispatch(searchJourneys(updatedParams));
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -255,18 +271,24 @@ function SearchPage() {
               >
                 <TextField
                   fullWidth
+                  label="Date du voyage"
                   className="search-form__input-filter"
                   sx={{ marginRight: '0.6rem' }}
                   type="date"
                   name="date"
-                  value={new Date().toISOString().split('T')[0]}
+                  // value={new Date().toISOString().split('T')[0]}
+                  value={datetime}
+                  disablePast
+                  onChange={(value) => console.log(value)}
                   color="success"
                   disabled={isLoading}
                 />
                 <TextField
                   fullWidth
+                  label="Temps de voyage maximum"
                   className="search-form__input-filter"
-                  value={new Date(maxDuration * 1000).toISOString().slice(11, 19)}
+                  // value={new Date(maxDuration * 1000).toISOString().slice(11, 19)}
+                  value={maxDuration}
                   onChange={handleMaxDurationChange}
                   type="time"
                   name="time"

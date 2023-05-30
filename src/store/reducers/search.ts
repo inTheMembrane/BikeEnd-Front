@@ -1,4 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createAction, createReducer } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { createAppAsyncThunk } from '../../utils/redux';
 import { Journey } from '../../@types/journey';
@@ -19,13 +19,20 @@ interface SearchState {
 const initialState: SearchState = {
   params: {
     from: '',
-    datetime: '',
-    max_duration: 3600,
+    datetime: new Date(),
+    max_duration: '01:00',
   },
   journeys: [],
   error: null,
   loading: false,
 };
+
+export type KeysOfParams = keyof SearchState['params'];
+
+export const changeParamsField = createAction<{
+  propertyKey: KeysOfParams
+  value: string | number;
+}>('search/CHANGE_PARAMS_FIELD');
 
 export const searchJourneys = createAppAsyncThunk<
 Journey[],
@@ -36,7 +43,7 @@ JourneySearchParams>(
     if (tokenWithQuotesTest) {
       try {
         const token = tokenWithQuotesTest.replace(/^"(.*)"$/, '$1');
-        const queryParams = new URLSearchParams(`from=${params.from}&max_duration=${params.max_duration}&per_page=10&current_page=1`);
+        const queryParams = new URLSearchParams(`from=${params.from}&max_duration=${params.max_duration}&datetime=${params.datetime}&per_page=10&current_page=1`);
         const url = `journey/search?${queryParams.toString()}`;
         const headers = {
           Authorization: `Bearer ${token}`,

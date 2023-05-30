@@ -73,6 +73,7 @@ function SignupPage() {
   const passwordCheck = useAppSelector((state) => state.login.credentials.passwordCheck);
   const acceptedConditions = useAppSelector((state) => state.login.acceptedConditions);
   const isLogged = useAppSelector((state) => state.login.logged);
+  const isLoading = useAppSelector((state) => state.login.isLoading);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickPassword = () => setShowPassword((show) => !show);
@@ -177,6 +178,7 @@ function SignupPage() {
               label="Prénom"
               value={firstname}
               onChange={handleChangeField}
+              disabled={isLoading}
               size="small"
             />
             <TextField
@@ -187,6 +189,7 @@ function SignupPage() {
               label="Nom"
               value={lastname}
               onChange={handleChangeField}
+              disabled={isLoading}
               size="small"
             />
             <TextField
@@ -198,6 +201,7 @@ function SignupPage() {
               label="Adresse e-mail"
               value={email}
               onChange={handleChangeField}
+              disabled={isLoading}
               size="small"
             />
             <TextField
@@ -209,6 +213,7 @@ function SignupPage() {
               label="Mot de passe"
               value={password}
               onChange={handleChangeField}
+              disabled={isLoading}
               size="small"
               InputProps={{
                 endAdornment: (
@@ -234,6 +239,7 @@ function SignupPage() {
               label="Confirmer le mot de passe"
               value={passwordCheck}
               onChange={handleChangeField}
+              disabled={isLoading}
               size="small"
               InputProps={{
                 endAdornment: (
@@ -256,6 +262,7 @@ function SignupPage() {
                   <Checkbox
                     checked={acceptedConditions}
                     onChange={handleChangeCheckBox}
+                    disabled={isLoading}
                     color="success"
                   />
                   )}
@@ -278,6 +285,7 @@ function SignupPage() {
             </Link>
             <Button
               type="submit"
+              disabled={isLoading}
               sx={buttonStyle}
               variant="contained"
             >
@@ -296,7 +304,7 @@ function SignupPage() {
           }}
           className="container-text"
         >
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ad, dicta earum vero.
+          Vos informations sont utilisées uiquement pour assurer le bon fonctionnement de l'app et ne sont pas partagées à des tiers.
         </Typography>
         {!isLogged && (
         <AlertMessage />
