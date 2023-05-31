@@ -5,8 +5,8 @@ import { Journey } from '../../@types/journey';
 
 interface JourneySearchParams {
   from: string;
-  datetime: string;
-  max_duration: number;
+  datetime: Date;
+  max_duration: string;
 }
 
 interface SearchState {
@@ -42,8 +42,10 @@ JourneySearchParams>(
     const tokenWithQuotesTest = localStorage.getItem('token');
     if (tokenWithQuotesTest) {
       try {
+        const max_duration = parseInt(params.max_duration.split(':')[0])*3600+parseInt(params.max_duration.split(':')[1])*60
+        const datetime = params.datetime
         const token = tokenWithQuotesTest.replace(/^"(.*)"$/, '$1');
-        const queryParams = new URLSearchParams(`from=${params.from}&max_duration=${params.max_duration}&datetime=${params.datetime}&per_page=10&current_page=1`);
+        const queryParams = new URLSearchParams(`from=${params.from}&max_duration=${max_duration}&datetime=${params.datetime}&per_page=10&current_page=1`);
         const url = `journey/search?${queryParams.toString()}`;
         const headers = {
           Authorization: `Bearer ${token}`,
