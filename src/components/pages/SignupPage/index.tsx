@@ -116,6 +116,11 @@ function SignupPage() {
       dispatch(setDisplaySnackbar({ severity: 'error', message: 'Votre email doit être au bon format : example@domain.xyz' }));
       return;
     }
+    if (!acceptedConditions) {
+      dispatch(setDisplaySnackbar({ severity: 'error', message: 'Vous devez accepter les conditions d\'utilisations. Même si elles n\'existent pas encore...' }));
+      return;
+    }
+
     dispatch(register());
   };
 
